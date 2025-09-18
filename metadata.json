@@ -1,0 +1,5 @@
+{
+  "name": "Knowledge Database Indexer",
+  "description": "Evaluates an academic document, extracts key information, and formats it for indexing in a database. Acts as a knowledge indexing engine.",
+  "requestFramePermissions": []
+}

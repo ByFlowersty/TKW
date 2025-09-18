@@ -1,0 +1,39 @@
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Dependencias del proyecto
+# Ignora la carpeta de módulos de Node.js
+/node_modules
+
+# Ignora la carpeta de dependencias de Composer
+/vendor
+
+# Archivos de configuración y de entorno
+# Archivo de variables de entorno, que a menudo contiene credenciales
+.env
+.env.local
+
+# Archivos temporales y de logs
+*.log
+*.tmp
+/logs
+
+# Archivos de la IDE (entorno de desarrollo integrado)
+# Ignora la configuración de Visual Studio Code
+.vscode/
+
+# Ignora la configuración de JetBrains (IntelliJ, PhpStorm, WebStorm, etc.)
+.idea/
+
+# Código compilado y directorios de salida
+/build
+/dist
+/out
+*.o
+*.pyc
+*.class
+
+# Archivos de caché
+.cache/
+/tmp
