@@ -1,5 +1,6 @@
 import React from 'react';
-import { User } from '@supabase/supabase-js';
+// FIX: Changed import for User to '@supabase/auth-js' to resolve module export errors.
+import type { User } from '@supabase/auth-js';
 
 type View = 'personal' | 'explore';
 
@@ -32,7 +33,7 @@ export const Header: React.FC<HeaderProps> = ({ user, onSignOut, currentView, se
           <Logo />
           <div>
             <h1 className="text-3xl font-bold font-garamond text-[#333]">AVI</h1>
-            <p className="font-lato text-gray-600 mt-0">Archivo Virtual Interactivo</p>
+            <p className="font-lato text-gray-600 mt-0">Archive Virtual Intellect</p>
           </div>
         </div>
         {user && (
