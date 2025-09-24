@@ -30,7 +30,7 @@ export const analyzeDocument = async (file: File): Promise<IndexingResult> => {
 
   const filePart = await fileToGenerativePart(file);
 
-  const prompt = `Analiza el siguiente documento. Quiero que TODA tu respuesta, incluyendo el título, el resumen, la categoría y las palabras clave, esté exclusivamente en español. Proporciona un título conciso, un resumen detallado (aproximadamente 150 palabras), una categoría relevante de una lista general (ej: Tecnología, Ciencia, Arte, Historia, Finanzas), una lista de 5 a 7 palabras clave, y una puntuación de relevancia de 0 a 1 que indique el valor del documento para una base de conocimiento. La respuesta DEBE ser únicamente en español.`;
+  const prompt = `Analiza el siguiente archivo. Quiero que TODA tu respuesta, incluyendo el título, el resumen, la categoría y las palabras clave, esté exclusivamente en español. Proporciona un título conciso, un resumen detallado (aproximadamente 150 palabras), una categoría relevante de una lista general (ej: Tecnología, Ciencia, Arte, Historia, Finanzas), una lista de 5 a 7 palabras clave, y una puntuación de relevancia de 0 a 1 que indique el valor del archivo para una base de conocimiento. La respuesta DEBE ser únicamente en español.`;
 
   const responseSchema = {
     type: Type.OBJECT,
