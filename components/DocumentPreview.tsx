@@ -21,6 +21,42 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ document, onCl
     };
   }, [onClose]);
 
+  const renderPreviewContent = () => {
+    const fileName = document.fileName.toLowerCase();
+    const fileUrl = document.fileUrl;
+
+    if (fileName.endsWith('.mp4') || fileName.endsWith('.webm') || fileName.endsWith('.ogv')) {
+      return (
+        <div className="w-full h-full flex items-center justify-center bg-black">
+          <video src={fileUrl} controls className="max-w-full max-h-full">
+            Tu navegador no soporta la etiqueta de video.
+          </video>
+        </div>
+      );
+    }
+
+    if (fileName.endsWith('.mp3') || fileName.endsWith('.wav') || fileName.endsWith('.ogg')) {
+      return (
+        <div className="w-full h-full flex items-center justify-center bg-gray-200">
+          <div className="w-full max-w-lg p-8">
+            <audio src={fileUrl} controls className="w-full">
+              Tu navegador no soporta la etiqueta de audio.
+            </audio>
+          </div>
+        </div>
+      );
+    }
+    
+    // Default to iframe for PDF, TXT, etc.
+    return (
+      <iframe
+        src={fileUrl}
+        title={document.title}
+        className="w-full h-full border-none"
+      />
+    );
+  };
+
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 sm:p-8 animate-fade-in"
@@ -57,12 +93,8 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ document, onCl
                 <span className="ml-2 hidden sm:inline">Abrir Original</span>
             </a>
         </div>
-        <div className="flex-grow bg-gray-200">
-            <iframe
-              src={document.fileUrl}
-              title={document.title}
-              className="w-full h-full border-none"
-            />
+        <div className="flex-grow bg-gray-200 overflow-hidden">
+            {renderPreviewContent()}
         </div>
       </div>
     </div>
