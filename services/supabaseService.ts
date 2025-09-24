@@ -186,10 +186,18 @@ export const getUniqueCategories = async (): Promise<string[]> => {
         console.error('Error fetching unique categories:', error);
         return [];
     }
+    
+    if (!data) {
+        return [];
+    }
 
-    // FIX: Corrected the filter predicate to return a boolean value. The expression `&& c` could return a string, which caused a type error.
-    // Using `&& !!c` ensures a boolean is returned, allowing the type guard to function correctly and resolving subsequent type errors.
-    const categories = data.map(item => item.category).filter((c): c is string => typeof c === 'string' && !!c);
+    // FIX: Replaced `flatMap` with a more explicit `map` and `filter` chain to ensure correct type inference.
+    // The previous `flatMap` implementation was resulting in `unknown[]`, causing a type error.
+    // This approach is more robust and correctly types the result as `string[]`.
+    const categories = data
+        .map(item => item?.category)
+        .filter((category): category is string => typeof category === 'string' && category.length > 0);
+
     return [...new Set(categories)];
 };
 
