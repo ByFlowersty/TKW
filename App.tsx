@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Session, User } from '@supabase/supabase-js';
+// FIX: Changed import for Session and User to '@supabase/auth-js' to resolve module export errors.
+// This is a common requirement in some versions of the Supabase client library.
+import type { Session, User } from '@supabase/auth-js';
 import { Auth } from './components/Auth';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
@@ -79,7 +81,7 @@ const App: React.FC = () => {
   
   const handleSubmit = async (file: File) => {
     if (!user) {
-      setError("Debes iniciar sesión para subir documentos.");
+      setError("Debes iniciar sesión para subir archivos.");
       return;
     }
     setIsLoading(true);
@@ -87,27 +89,37 @@ const App: React.FC = () => {
     setResult(null);
 
     try {
-      // Step 1: Analyze document with AI
-      const analysisResult = await analyzeDocument(file);
-      setResult(analysisResult);
+      let analysisResult: IndexingResult;
+      const isAudio = file.type.startsWith('audio/');
+
+      if (isAudio) {
+        // Para archivos de audio, omitir el análisis de IA y crear datos de marcador de posición
+        analysisResult = {
+          title: file.name,
+          summary: `Archivo de audio: ${file.name}.`,
+          category: 'Audio',
+          // Utiliza el nombre del archivo (sin extensión) como palabra clave predeterminada
+          keywords: [file.name.split('.').slice(0, -1).join('.')], 
+          relevanceScore: 0,
+        };
+        // No establecer 'result' para los archivos de audio, ya que no hay análisis que mostrar
+      } else {
+        // Para otros archivos, analizar con la IA
+        analysisResult = await analyzeDocument(file);
+        setResult(analysisResult);
+      }
       
-      // Step 2: Upload file to storage
       const { publicUrl } = await uploadFile(file, user.id);
       
-      // FIX: Added the required 'fileName' property to `newDocumentData` and removed the explicit, incorrect type annotation.
-      // This resolves the type error when calling `addDocument`.
-      // Step 3: Prepare data for the database, matching the schema
       const newDocumentData = {
         ...analysisResult,
         fileUrl: publicUrl,
-        userId: user.id, // This is the user's ID
+        userId: user.id,
         fileName: file.name,
       };
       
-      // Step 4: Add the document metadata to the database
       await addDocument(newDocumentData);
       
-      // Step 5: Refresh user's documents and upload count
       await fetchDocuments();
       await fetchUploadCount();
 
@@ -139,7 +151,7 @@ const App: React.FC = () => {
                     <p>{error}</p>
                 </div>
             )}
-            {isLoading && !result && <Loader message="Analizando documento con IA, por favor espera..." />}
+            {isLoading && !result && <Loader message="Procesando archivo, por favor espera..." />}
             {result && <div className="mt-8"><ResultsDisplay result={result} /></div>}
             <KnowledgeBank documents={documents} isLoading={isLoadingDocs} title="Mi Banco de Conocimiento" />
           </>
