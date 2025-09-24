@@ -7,8 +7,16 @@ interface InputFormProps {
   uploadLimit: number;
 }
 
-const supportedFileTypes = ['application/pdf', 'text/plain', 'text/markdown'];
-const MAX_FILE_SIZE_MB = 5;
+const supportedFileTypes = [
+    'application/pdf', 
+    'text/plain', 
+    'text/markdown',
+    'audio/mpeg',
+    'audio/wav',
+    'video/mp4',
+    'video/webm',
+];
+const MAX_FILE_SIZE_MB = 25;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading, uploadCount, uploadLimit }) => {
@@ -24,7 +32,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading, uploa
     setFile(null);
     if (selectedFile) {
       if (!supportedFileTypes.includes(selectedFile.type)) {
-        setError(`Tipo de archivo no soportado. Por favor, suba un .pdf, .txt, o .md`);
+        setError(`Tipo de archivo no soportado. Por favor, suba un archivo compatible.`);
         return;
       }
       if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
@@ -68,7 +76,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading, uploa
       <form onSubmit={handleSubmit}>
         <div className="flex justify-between items-center mb-3">
             <label htmlFor="document-upload" className="block text-xl font-semibold text-gray-700">
-            Subir Documento para Indexar:
+            Subir Archivo para Indexar:
             </label>
             <div className="font-lato text-sm text-gray-600">
                 Subidas restantes hoy: <span className="font-bold text-archive-teal">{uploadsRemaining} / {uploadLimit}</span>
@@ -88,7 +96,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading, uploa
             type="file"
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             onChange={(e) => handleFileChange(e.target.files?.[0])}
-            accept=".pdf,.txt,.md"
+            accept=".pdf,.txt,.md,.mp3,.wav,.mp4,.webm"
             disabled={isLoading || hasReachedLimit}
           />
           <div className="text-center font-lato">
@@ -99,7 +107,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading, uploa
                     <p className="text-gray-600">
                     <span className="font-semibold text-archive-teal">Haga clic para subir</span> o arrastre y suelte
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">Soportado: PDF, TXT, MD (Máx {MAX_FILE_SIZE_MB}MB)</p>
+                    <p className="text-xs text-gray-500 mt-1">Soportado: PDF, TXT, MD, MP3, WAV, MP4, WEBM (Máx {MAX_FILE_SIZE_MB}MB)</p>
                     {file && <p className="text-sm font-semibold text-gray-800 mt-4">{file.name}</p>}
                 </>
             )}
@@ -120,7 +128,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading, uploa
               Procesando...
             </>
           ) : (
-            'Analizar e Indexar Documento'
+            'Analizar e Indexar Archivo'
           )}
         </button>
       </form>
