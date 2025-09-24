@@ -191,12 +191,16 @@ export const getUniqueCategories = async (): Promise<string[]> => {
         return [];
     }
 
-    // FIX: Replaced `flatMap` with a more explicit `map` and `filter` chain to ensure correct type inference.
-    // The previous `flatMap` implementation was resulting in `unknown[]`, causing a type error.
-    // This approach is more robust and correctly types the result as `string[]`.
-    const categories = data
-        .map(item => item?.category)
-        .filter((category): category is string => typeof category === 'string' && category.length > 0);
+    // FIX: Replaced the map/filter chain with a more explicit reduce function to avoid
+    // a subtle type inference issue where the result was being inferred as `unknown[]`
+    // instead of `string[]`. This approach is more robust.
+    const categories = (data || []).reduce<string[]>((acc, item) => {
+        const category = item?.category;
+        if (typeof category === 'string' && category.length > 0) {
+            acc.push(category);
+        }
+        return acc;
+    }, []);
 
     return [...new Set(categories)];
 };
