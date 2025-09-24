@@ -91,18 +91,20 @@ const App: React.FC = () => {
     try {
       let analysisResult: IndexingResult;
       const isAudio = file.type.startsWith('audio/');
+      const isVideo = file.type.startsWith('video/');
 
-      if (isAudio) {
-        // Para archivos de audio, omitir el análisis de IA y crear datos de marcador de posición
+      if (isAudio || isVideo) {
+        // Para archivos de audio y video, omitir el análisis de IA y crear datos de marcador de posición
+        const fileType = isAudio ? 'Audio' : 'Video';
         analysisResult = {
           title: file.name,
-          summary: `Archivo de audio: ${file.name}.`,
-          category: 'Audio',
+          summary: `Archivo de ${fileType.toLowerCase()}: ${file.name}.`,
+          category: fileType,
           // Utiliza el nombre del archivo (sin extensión) como palabra clave predeterminada
           keywords: [file.name.split('.').slice(0, -1).join('.')], 
           relevanceScore: 0,
         };
-        // No establecer 'result' para los archivos de audio, ya que no hay análisis que mostrar
+        // No establecer 'result' para los archivos de audio/video, ya que no hay análisis que mostrar
       } else {
         // Para otros archivos, analizar con la IA
         analysisResult = await analyzeDocument(file);
